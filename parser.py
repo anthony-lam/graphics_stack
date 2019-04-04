@@ -57,8 +57,8 @@ The file follows the following format:
 
 See the file script for an example of the file format
 """
-stack = new_matrix()
-ident(stack)
+stack = [new_matrix()]
+ident(stack[0])
 
 ARG_COMMANDS = [ 'box', 'sphere', 'torus', 'circle', 'bezier', 'hermite', 'line', 'scale', 'move', 'rotate', 'save', 'push', 'pop']
 
@@ -81,27 +81,35 @@ def parse_file( fname, edges, polygons, csystems, screen, color ):
 
         if line == 'sphere':
             #print 'SPHERE\t' + str(args)
-            add_sphere(polygons,
+            #temp = new_matrix()
+            add_sphere(temp,
                        float(args[0]), float(args[1]), float(args[2]),
                        float(args[3]), step_3d)
-            matrix_mult(polygons, stack[-1])
-            draw_polygons(polygons, screen, color)
-            polygons = []
+            print temp
+            matrix_mult(stack[-1], temp)
+            polygons.extend(temp)
         elif line == 'push':
             stack.append(stack[-1][:])
         elif line == 'pop':
             del stack[-1]
         elif line == 'torus':
             #print 'TORUS\t' + str(args)
-            add_torus(polygons,
+            #temp = new_matrix()
+            add_torus(temp,
                       float(args[0]), float(args[1]), float(args[2]),
                       float(args[3]), float(args[4]), step_3d)
+            matrix_mult(stack[-1], temp)
+            polygons.extend(temp)
 
         elif line == 'box':
             #print 'BOX\t' + str(args)
-            add_box(polygons,
+            temp = new_matrix()
+            add_box(temp,
                     float(args[0]), float(args[1]), float(args[2]),
                     float(args[3]), float(args[4]), float(args[5]))
+            print temp
+            matrix_mult(stack[-1], temp)
+            polygons.extend(temp)
 
         elif line == 'circle':
             #print 'CIRCLE\t' + str(args)
@@ -120,20 +128,22 @@ def parse_file( fname, edges, polygons, csystems, screen, color ):
 
         elif line == 'line':
             #print 'LINE\t' + str(args)
-
-            add_edge( edges,
+            temp = new_matrix()
+            add_edge( temp,
                       float(args[0]), float(args[1]), float(args[2]),
                       float(args[3]), float(args[4]), float(args[5]) )
+            matrix_mult(stack[-1], temp)
+            edges.extend(temp)
 
         elif line == 'scale':
             #print 'SCALE\t' + str(args)
             t = make_scale(float(args[0]), float(args[1]), float(args[2]))
-            matrix_mult(t, stack[-1])
+            matrix_mult(t,stack[-1])
 
         elif line == 'move':
             #print 'MOVE\t' + str(args)
             t = make_translate(float(args[0]), float(args[1]), float(args[2]))
-            matrix_mult(t, stack[-1])
+            matrix_mult(t,stack[-1])
 
         elif line == 'rotate':
             #print 'ROTATE\t' + str(args)
@@ -160,7 +170,9 @@ def parse_file( fname, edges, polygons, csystems, screen, color ):
 
         elif line == 'display' or line == 'save':
             clear_screen(screen)
+            #print edges
             draw_lines(edges, screen, color)
+            #print polygons
             draw_polygons(polygons, screen, color)
 
             if line == 'display':
