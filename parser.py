@@ -81,7 +81,7 @@ def parse_file( fname, edges, polygons, csystems, screen, color ):
 
         if line == 'sphere':
             #print 'SPHERE\t' + str(args)
-            #temp = new_matrix()
+            temp = []
             add_sphere(temp,
                        float(args[0]), float(args[1]), float(args[2]),
                        float(args[3]), step_3d)
@@ -94,7 +94,7 @@ def parse_file( fname, edges, polygons, csystems, screen, color ):
             del stack[-1]
         elif line == 'torus':
             #print 'TORUS\t' + str(args)
-            #temp = new_matrix()
+            temp = []
             add_torus(temp,
                       float(args[0]), float(args[1]), float(args[2]),
                       float(args[3]), float(args[4]), step_3d)
@@ -103,7 +103,7 @@ def parse_file( fname, edges, polygons, csystems, screen, color ):
 
         elif line == 'box':
             #print 'BOX\t' + str(args)
-            temp = new_matrix()
+            temp = []
             add_box(temp,
                     float(args[0]), float(args[1]), float(args[2]),
                     float(args[3]), float(args[4]), float(args[5]))
